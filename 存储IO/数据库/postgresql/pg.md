@@ -91,11 +91,11 @@ bbs、微信、QQ、微博、钉钉
 
 
 
-![pg常见部署架构](.\images\pg常见部署架构-1.png)
+![pg常见部署架构](./images/pg常见部署架构-1.png)
 
 
 
-![image-20240328224758155](.\images\pg常见部署架构-2.png)
+![image-20240328224758155](./images/pg常见部署架构-2.png)
 
 
 
@@ -119,13 +119,13 @@ bbs、微信、QQ、微博、钉钉
 - 跨库访问
 - 同构、异构增量同步
 
-![pg备份-1](.\images\pg备份-1.png)
+![pg备份-1](./images/pg备份-1.png)
 
 
 
-![pg还原-1](.\images\pg还原-1.png)
+![pg还原-1](./images/pg还原-1.png)
 
-![pg复制-1](.\images\pg复制-1.png)
+![pg复制-1](./images/pg复制-1.png)
 
 
 
@@ -177,7 +177,7 @@ https://wiki.postgresql.org/wiki/PostgreSQL_derived_databases
 
 
 
-![pg多模-1](.\images\pg多模-1.png)
+![pg多模-1](./images/pg多模-1.png)
 
 
 
@@ -233,7 +233,7 @@ xxxx
 
 知识图谱：
 
-![pg知识图谱](.\images\pg知识图谱.png)
+![pg知识图谱](./images/pg知识图谱.png)
 
 
 
