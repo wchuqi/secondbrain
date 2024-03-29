@@ -2,6 +2,8 @@ pg开发
 
 教科书级别的数据库
 
+PG的开源许可是类BSD许可。可以随意分发、闭源或者开源。
+
 # 1 初识PG
 
 ## 1.1 pg的生态
@@ -25,6 +27,12 @@ https://www.postgresql.org/developer/roadmap/
 postgresql commitfest：
 
 https://commitfest.postgresql.org/
+
+
+
+**PostgreSQL 社区分析 - 为什么PostgreSQL社区几乎不可能被任何一个商业公司、国家所控制？**
+
+https://github.com/digoal/blog/blob/master/201906/20190608_02.md
 
 
 
@@ -189,6 +197,10 @@ xxxx
 
 
 
+
+
+
+
 **pg学习资料**
 
 文档：
@@ -228,6 +240,68 @@ https://github.com/digoal/blog/blob/master/201805/20180524_02.md
 **交流圈子**
 
 xxxx
+
+ **架构独特性**
+
+PG采用了开放接口的设计：
+
+- type，operator，index
+- storage，language，fdw
+- custom，scan，sample，hook等
+
+基于PG开发接口扩展的产品或插件：
+
+- 基于PG的图数据库agensgraph，edgedb
+- 流数据库pipelinedb
+- GIS PostGIS，pgrouting，pgpointcloud
+- 时序数据库 timescaledb
+- 推荐数据库 recdb
+- 搜索引擎 Yahoo! Everest
+- MPP greenplum，redshift，asterdata
+- 机器学习 madlib
+- 图像识别 imgsmlr
+- 分词 zhparser，pg_jieba
+- 分布式数据库 citus，pg-xI，华为Gauss，antdb
+- Oracle兼容 edb
+- 文档数据库 torodb
+
+
+
+pg插件仓库：
+
+https://pgxn.org/
+
+Gis插件：
+
+https://postgis.net/
+
+
+
+**技术趋势**
+
+1、pg是多模数据库，因为它的开放性，可以随意扩展。例如前面提到的诸多插件，使得PG是目前最强大的多模数据库。
+
+2、内置并行计算（36种并行计算场景（几乎涵盖所有ap sql），平均提速20倍以上）。
+
+3、支持存储引擎扩展（12，zheap，zedstore）。
+
+4、对芯片友好，如ARM芯片的支持。
+
+以上4点满足市场的既要又要还要的需求：
+
+既要SQL通用性，又要NOSQL扩展性，还要多模开发便捷性。
+
+既要OLTP又要OLAP。
+
+
+
+PG OLAP能力
+
+PostgreSQL 11 并行计算使用场景、性能提升倍数：
+
+https://github.com/digoal/blog/blob/master/201903/20190318_05.md
+
+
 
 
 
