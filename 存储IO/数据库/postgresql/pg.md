@@ -225,18 +225,6 @@ https://github.com/digoal/blog/blob/master/201805/20180524_02.md
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 **交流圈子**
 
 xxxx
@@ -300,6 +288,390 @@ PG OLAP能力
 PostgreSQL 11 并行计算使用场景、性能提升倍数：
 
 https://github.com/digoal/blog/blob/master/201903/20190318_05.md
+
+
+
+# 安装
+
+https://github.com/digoal/blog/blob/master/201901/20190105_01.md
+
+https://github.com/digoal/blog/blob/master/201611/20161121_01.md
+
+熟悉pg在linux的安装
+
+
+
+**linux内核配置**
+
+/etc/sysctl.conf
+
+https://github.com/digoal/blog/blob/master/201608/20160803_01.md
+
+注意 sysctl.d优先级
+
+```shell
+# 最多文件打开数
+fs.aio-max-nr=1048576
+fs.file-max=76724600
+
+# 可选：kernel.core_pattern=/data01/corefiles/core_%e_%u_%t_%s.%p
+# /data01/corefiles 事先建好，权限777，如果是软链接，对应的目录修改为777
+
+kernel.sem=4096 2147483647 2147483646 512000
+# 信号量，ipcs -l或-u查看，每16个进程一组，每组信号量需要17个信号量。
+
+kernel.shmall=107374182
+# 所有共享内存段相加大小限制（建议内存的80％），单位为页。
+
+kernel.shmmax=274877906944
+# 最大单个共享内存段大小（建议为内存一半），＞9.2的版本已大幅降低共享内存的使用，单位为字节。
+
+kernel.shmmni=819200
+# 一共能生成多少共享内存段，每个PG数据库集群至少2个共享内存段
+
+# 网络相关配置
+net.core.netdev_max_backlog=10000
+net.core.rmem_default=262144
+# The default setting of the socket receive buffer in bytes. 
+net.core.rmem_max=4194304
+# The maximum receive socket buffer size in bytes 
+net.core.wmem_default=262144
+# The default setting (in bytes) of the socket send buffer. 
+net.core.wmem_max=4194304
+# The maximum send socket buffer size in bytes. 
+net.core.somaxconn=4096
+net.ipv4.tcp_max_syn_backlog=4096 
+net.ipv4.tcp_keepalive_intvl=20 
+net.ipv4.tcp_keepalive_probes=3 
+net.ipv4.tcp_keepalive_time=60
+net.ipv4.tcp_mem=8388608 12582912 16777216 
+net.ipv4.tcp_fin_timeout=5
+net.ipv4.tcp_synack_retries=2 
+net.ipv4.tcp_syncookies=1
+
+# 开启SYN Cookies。当出现SYN等待队列溢出时，启用cookie来处理，可防范少量的SYN攻击
+net.ipv4.tcp_timestamps=1
+# 减少time＿wait
+net.ipv4.tcp_tw_recycle=0
+# 如果＝1则开启TCP连接中TIME—WAIT套接字的快速回收，但是NAT环境可能导致连接失败，建议服务端关闭它
+net.ipv4.tcp_tw_reuse=1
+# 开启重用。允许将TIME—WAIT套接字重新用于新的TCP连接
+net.ipv4.tcp_max_tw_buckets=262144
+net.ipv4.tcp_rmem=8192 87380 16777216 
+net.ipv4.tcp_wmem=8192 65536 16777216 
+# iptables相关
+net.nf_conntrack_maxy 1200000
+net.netfilter.nf_conntrack_max=1200000 
+
+vm.dirty_background_bytes=409600000
+# 系统脏页到达这个值，系统后台刷脏页调度进程pdflush（或其他）自动将（dirty＿expire＿centisecs／100）秒前的脏页刷到磁盘
+# 默认为10％，大内存机器建议调整为直接指定多少字节
+
+vm.dirty_expire_centisecs=3000
+# 比这个值老的脏页，将被刷到磁盘。3000表示30秒。
+
+vm.dirty_ratio=95
+# 如果系统进程刷脏页太慢，使得系统脏页超过内存95％时，则用户进程如果有写磁盘的操作（如fsync，fdatasync等调用），则需要主动把系统脏页刷出。
+# 有效防止用户进程刷脏页，在单机多实例，并且使用CGROUP限制单实例IOPS的情况下非常有效。
+
+vm.dirty_writeback_centisecs=100
+# pdflush（或其他）后台刷脏页进程的唤醒间隔，100表示1秒。
+
+vm.swappiness=0
+# 不使用交换分区 
+
+vm.mmap_min_addr=65536
+vm.overcommit_memory=0
+# 在分配内存时，允许少量over malloc，如果设置为1，则认为总是有足够的内存，内存较少的测试环境可以使用1.
+
+vm.overcommit_ratio=90
+#当overcommit_memory=2时，用于参与计算允许指派的内存大小。
+
+vm.swappiness=0
+# 关闭交换分区
+
+vm.zone_reclaim_mode=0
+# 禁用 numa， 或者在vmlinux中禁止.
+
+net.ipv4.ip_local_port_range=40000 65535
+# 本地自动分配的TCP，UDP端口号范围
+
+fs.nr_open=20480000
+# 单个进程允许打开的文件句柄上限
+
+# 以下参数请注意
+# wm.extra_free_kbytes=4096000
+# vm.min_free_kbytes=2097152 # vm.min_free_kbytes建议每32G内存分配1G vm.min_free_kbytes
+# 如果是小内存机器，以上两个值不建议设置
+
+# vm.nr_hugepages=66536
+# 建议sharedbuffer设置超过32GB时使用大页，页大小/proc/meminfoHugepagesize
+# vm.lowmem_reserve_ratio=111
+# 对于内存大于64G时，建议设置，否则建议默认值25625632
+```
+
+
+
+**linux资源限制**
+
+```shell
+# 注意limits.d优先级
+# ngfile超过1048576的话，一定要先将sysctl的fs.nr_open设置为更大的值，并生效后才能继续设置nofile，
+
+* soft nofile 1024000
+* hard nofile 1024000
+* soft nproc unlimited 
+* hard nproc unlimited
+* soft core unlimited
+* hard core unlimited
+* soft memlock unlimited
+* hard memlock unlimited
+
+
+```
+
+**大页配置**
+
+https://github.com/digoal/blog/blob/master/201803/20180325_02.md
+
+https://github.com/digoal/blog/blob/master/201601/20160111_01.md
+
+
+
+为什么要使用hugepage？
+
+- OOM
+- Partition table，Relcache
+- Process model，Shared buffer touch，hash table
+  - https://commitfest.postgresql.org/22/1695
+
+```shell
+评估Hugepage设置多大？
+
+1、评估PG启动需要多少共享内存，先使用非大页启动
+配置postgresgl.conf
+huge_pages= off
+启动数据库，从postmaster.pid中获取数据库启动需要多少内存。
+获得PID
+$ Shead-1SPGDATA/postmasterpid
+4170
+计算数据库启动用了多少内存，指定进程ID
+$ Spmap4170 | awk '/rw-s/ && /zero/ {print $2}'
+6490428K
+
+2、计算需要多少HUGEPAGE（hugepage页大小）
+$ grep ^Hugepagesize /proc/meminfo
+Hugepagesize：2048kB
+计算需要多少HUGEPAGE
+6490428/2048 gives approximately 3169.154
+soin this example weneed atleast3170 huge pages
+which we can set with:
+
+配置
+3、根据计算好的HUGEPAGE数分配HUGEPAGE
+$ sysctl -w vm.nr_hugepages=3170
+Alarger setting would be appropriate if other programs on the machine also need hugepages.
+
+Don't forget to add this setting to /etc/sysctl.conf so that it will be reapplied lafter reboots.
+
+$ vi/etc/sysctl.conf
+vm.nr_hugepages=3170
+
+4、配置postgresql.conf，让数据库使用hugepage。
+huge_pages=on # 或者try
+shared_buffers=8GB # 使用8G内存
+5、操作系统（可选，关闭透明大页）
+配置grub.conf，加入如下，重启系统
+numa=off
+transparent_hugepage=never
+或
+在/etc/rc.local中加入下面的几行，然后重启操作系统：
+if test -f /sys/kernel/mm/transparent_hugepage/enabled;then
+	echo never > /sys/kernel/mm/transparent_hugepage/enabled
+fi
+if test -f /sys/kernel/mm/transparent_hugepage/defrag;then
+	echo never > /sys/kernel/mm/transparent_hugepage/defrag
+fi
+
+6、启动数据库
+$ pg_ctl start
+7、查看是否已使用大页。
+获得PID
+$ head -l $PGDATA/postmaster.pid
+4170
+
+计算数据库启动用了多少内存，指定进程ID
+$ pmap 4170 | awk '/rw-s/ && /zero/ {print $2}'
+没有返回，说明使用了hugepage.
+```
+
+**存储卷配置**
+
+为什么要卷管理？
+
+- 大表空间（PG表空间与目录对应，目录与文件系统对应）
+- 单个块设备空间不够
+- 多个块设备组成一个大文件系统
+
+如何进行卷管理
+
+- https://github.com/digoal/blog/blob/master/201809/20180919_01.md
+- Lvm
+- Zfs
+
+
+
+**文件系统条带、INODE、MOUNT配置**
+
+```shell
+ERROR:  could not create file "base/16392/166637613"：No space left on device
+
+digoal=# dolanguage plpgsql$
+declare
+begin
+fori in 1..1000 1oop
+execute 'create table test'||i||'(id int primary key, c1 int unique, c2 int unique)’;
+end loop;
+end;
+$$;
+
+ERROR: 53100: could not create file "base/16392/166691646": NO space left on device
+CONTEXT: SOL statement "create table test43(id int primary key, c1 int unique, c2 int unique)"
+PL/pgSQL function inline_code_block line 5 at EXECUTE statement
+LOCATION: mdcreate, md.c:304
+```
+
+```shell
+Inode，条带，mount
+每8K分配一个INODE（如果文件的平均大小为8K的话）
+
+创建ext4文件系统，配置条带（PG采用8K blocksize）
+$ mkfs.ext4 /dev/mapper/vgdata01-lv01 -m 0 -O extent,uninit_bg -E
+lazy_itable_init=1,stride=2,stripe_width=32 -i 8192 4096 -T largefile -L lvO1
+$ mkfs.ext4 /dev/mapper/vgdata01-lv02 -m 0 -O extent,uninit_bg -E
+lazy_itable_init=1,stride=2,stripewidth=32 -i 8192 -b 4096 -T largefile -L lv02
+$ mkfs.ext4 /dev/mapper/vgdata01-lv03 -m 0 -O extent,uninit_bg -E
+lazy_itable_init=1,stride=2,stripe_width=32 -i 8192-b 4096 -T largefile -L lv03
+```
+
+```shell
+配置挂载
+$ vi /etc/fstab
+LABEL=lvO1 /data01 ext4 defaults,noatime,nodiratime,nodelalloc,barrier=0,data=writeback 0 0
+LABEL=lvO2 /data02 ext4 defaults,noatime,nodiratime,nodelalloc,barrier=0,data=writeback 0 0
+LABEL=lV03 /data03 ext4 defaults,noatime,nodiratime,nodelalloc,barrier=0,data=writeback 0 0
+
+mkdir /data01
+mkdir /data02
+mkdir /data03
+
+mount -a
+```
+
+**cgroup资源隔离**
+
+https://github.com/digoal/blog/blob/master/201701/20170111_02.md
+https://github.com/digoal/blog/blob/master/201606/20160611_01.md
+https://github.com/digoal/blog/blob/master/201606/20160613_01.md
+https://github.com/digoal/blog/blob/master/201602/20160215_01.md
+
+- Cpu隔离
+- Memory隔离
+- Iops RW隔离
+- Bps RW隔离
+
+
+
+**编译安装**
+
+https://github.com/digoal/blog/blob/master/201611/20161121_01.md
+
+
+
+**RPM安装**
+
+https://github.com/digoal/blog/blob/master/201710/20171018_01.md
+
+
+
+```shell
+# 一些环境变量配置
+export PS1="$USER@`/bin/hostname -s`->"
+export PGPORT=8001
+export PGDATA=/datao1/digoal/pg_rootSPGPORT
+export LANG=en_US.utf8
+export PGHOME=/home/digoal/pgsql11.1
+export LD_LIBRARY_PATH=$PGHOME/lib;/lib64;/usr/lib64;/usr/local/lib64;/lib;/usr/lib;/usr/local/lib;$LD_LIBRARY_PATH
+export DATE=`date+"%Y%m%d%H%M"`
+export PATH=$PGHOME/bin;$PATH;
+export MANPATH=$PGHOME/share/man;$MANPATH
+export PGHOST=$PGDATA
+export PGUSER=postgres
+export PGDATABASE=postgres
+alias rm='rm -i'
+alias ll='ls -lh'
+unalias vi
+```
+
+
+
+**插件安装**
+
+https://pgxn.org/
+
+```shell
+git安装：
+wget http://api.pgxn.org/dist/orafce/3.7.2/orafce-3.7.2.zip
+unzip orafce-3.7.2.zip
+cd orafce-3.7.2/
+export PATH=/home/digoal/pgsql11.1/bin:$PATH
+which pg_config
+USE_PGXS=1 make
+USE_PGXS=1 make install
+
+
+psql
+psql(11.1）
+Type "help” for help.
+postgres=# create extension orafce；
+CREATEEXTENSION
+
+postgres=# \dx+ orafce
+Objects in extension "orafce'
+Object description
+-------------------------------------------------------------
+cast from bigint to nvarchar2
+cast from bigint to varchar2
+cast from character to nvarchar2
+cast from character to varchar2
+```
+
+
+
+**大版本升级-二进制校验**
+
+https://www.postgresql.org/docs/current/pgupgrade.html
+
+```shell
+$ pg_upgrade -b $PGHOME/bin -B $PGHOME/bin -c -d $PGDATA -D /data01/digoal/pg_root8000
+PerformingConsistency Checks
+---------------------------
+Checking cluster Versions                   ok
+Checking database user is the install user    ok
+Checking database connection settings      ok
+Checking for prepared transactions			ok
+Checking for reg* data types in user tables	ok
+Checking for contrib/isn with bigint-passing mismatch	ok
+Checking for presence of required libraries	ok
+Checking database user is the install user	ok
+Checking for prepared transactions	ok
+*Clusters are compatible*
+
+# 显示pg信息
+$ pg_controldata
+```
+
+
 
 
 
