@@ -291,7 +291,7 @@ https://github.com/digoal/blog/blob/master/201903/20190318_05.md
 
 
 
-# 安装
+## 1.2 安装
 
 https://github.com/digoal/blog/blob/master/201901/20190105_01.md
 
@@ -671,13 +671,239 @@ Checking for prepared transactions	ok
 $ pg_controldata
 ```
 
+## 1.3 实例初始化、基本配置
+
+熟悉数据库初始化、参数、防火墙、物理架构、逻辑结构、权限体系。
 
 
 
+**初始化数据库集群**
+
+```shell
+规划数据目录：
+- datafile ($PGDATA）
+
+规划表空间（可选）:
+- 数据表空间（index scan 离散IO（RW），seq scan 顺序IO）
+- 索引表空间（离散IO（RW））
+
+规划REDO目录（可选）
+- 顺序IO
+- pg_test_fsync
+
+规划日志目录（可选）
+- log，顺序1O
+
+规划临时对象表空间目录（可选）
+- 临时表、索引，排序临时文件等 -temp_tablespaces
+
+规划归档目录（可选）
+规划备份目录（可选）
+initdb
+
+```
+
+```shell
+initdb [OPTION] ... [DATADIR]
+Options:
+[-D，--pgdata=DATADIR 	location for this database cluster
+-E	--encoding=ENODING 	 setdefault encoding for new databases
+--locale=LOCALE			 set default locale for new databases
+--lc-collate=，--lc-ctype=，--lc-messages=LOCALE
+--lc-monetary=，--lc-numeric=，--lc-time=LOCALE
+set default locale in the respective category for new databases(default taken for new environment）
+--no-locale equivalent --to-locale=C
+-U，--username=NAME			database superuser name
+-X,--waldir=WALDIR			location for the write-ahead log directory
+--wal-segsize=SIZE			size of WAL segments，in megabytes
+-k，--data-checksums		    use data page checksums
+-s，--show					show internal settings
+```
+
+```shell
+mkdir /data01/digoal/pg_root8000
+chown -R digoal:digoal /data01/digoal
+export PGDATA=/data01/digoal/pg_root8000
+mkdir /data02/digoal/pg_wal8000  # redo存储的目录
+chownn -R digoal:digoal /data02/digoal/pg_wal8000
+initdb -D $PGDATA -U postgres -E UTF8 --lc-collate=C --lc-ctype=en_US.UTF8 -X /data02/digoal/pg_wal8000 -k
+
+# 启动
+pg_ctl start -D $PGDATA -o "-c work_mem='3MB'" -o "-c XXX='xX'" ...
+# 关闭
+pg_ctl stop -m fast -D $PGDATA
+pg ctl stop -m immediate -D $PGDATA
+```
+
+```shell
+单用户模式
+什么时候要用单用户？
+https://github.com/digoal/blog/blob/master/201012/20101210_01.md
+$ postgres --single
+Options for Single-User Mode
+	The following options only apply to the single-user model (see SINGLE-USER MODE).
+	--single
+		Selects the single-user mode.This mlist be the first argument on the command line
+	database
+		Specifies the name of the database to be accessed.This must be the last argument on the command line. if it is omitted it defaults to the user name.
+	-E
+		echo all commands to standard output before executing them
+	-j
+		Use semicolon followed by two newlines，rather than just newline，as the command entry terminator
+	-r filename
+	Send all server log output to filename. This option is only honored when supplied as a command-line option.
+```
+
+```shell
+# 自启动
+chmod +x /etc/rc.d/rc.loca
+vi /etc/rc.local
+if test -f /sys/kernel/mm/transparent hugepage/enabled; then
+	echo never > /sys/kernel/mm/transparent_hugepage/enabled
+fi
+su - postgres -c "pg_ctl start"
+```
 
 
 
-知识图谱：
+**pg参数介绍、优化**
+
+PG11参数讲解、优化模板
+https://github.com/digoal/blog/blob/master/201812/20181203_01.md
+
+参数优先级
+https://github.com/digoal/blog/blob/master/201901/20190130_03.md
+
+
+
+**数据库防火墙介绍与配置**
+
+```shell
+iptables（略）
+
+pg_hba.conf
+# METHOD can be trust”，”reject，“md5”,“password",“scram-sha-256",
+# “g5s"，“sspi"，“ident”, "peer”, "pam”，“ldap", "radius” or “cert".
+
+# Note that "password” sends passords in clear text；"md5” or
+# “scram-sha-256” are preferred since they send encrypted passwords。
+
+# TYPE DATABASE USER ADDRESS METHOD
+# “local“ is for Unix domain socket connections only
+local  all      all 		trust
+# IPv4 local connections
+host   all     	all  127.0.0.1/32 	trust
+# IPv6 local connections
+host   all		all	  ::1/128		trust
+# Allow replication connections from localhost,by a user with the
+# replication privilege
+local replication all 	trust
+host replication  all 127.0.0.1/32	trust
+host replication  all ::1/128	    trust
+host all	all   0.0.0.0/0		md5
+host replication all 0.0.0.0/0  mds
+```
+
+**数据库物理架构**
+
+```shell
+数据库进程结构：
+postmaster		所有数据库进程的主进程（负责监听和fork子进程）
+startup     	主要用于数据库恢复的进程
+syslogger		记录系统口志
+pgstat			收集统计信息
+pgarch			如果开启了归档，那么postmaster会fork一个归档进程
+checkpointer	负责检查点的进程
+bgwriter		负责把shared bufer中的脏数据写入磁盘的进程
+autovacuumlanucher	负责回收垃圾数据的进程，如果开启了autovacuum的话，那么postmaster会fork这个进程
+autovacuumworker	负责回收垃圾数据的worker进程，是lanucher进程fork出来的
+bgworker		分为很多种worker，例如logical replication worker launcher,parallel worker, replication worker等
+wal sender		逻辑复制、流式物理复制的WAL发送进程
+wal receiver	逻辑复制、流式物理复制的WAL接收进程
+vorkprocess		工作进程，动态fork，例如并行计算的进程
+```
+
+![数据库进程-1](./images/数据库进程结构-1.png)
+
+![query处理流程](./images/query处理流程.png)
+
+
+
+**数据库逻辑结构**
+
+https://github.com/digoal/blog/blob/master/201605/20160510_01.md
+
+![数据库逻辑结构-1](./images/数据库逻辑结构-1.png)
+
+**数据库权限体系**
+
+![数据库权限体系-1](./images/数据库权限体系-1.png)
+
+
+
+**数据库驱动**
+
+![数据库驱动-1](./images/数据库驱动-1.png)
+
+**连接数据库**
+
+```shell
+CLI
+	- psql
+GUI
+	- pgadmin
+	- navicat
+```
+
+```shell
+psql用法
+\?
+\h <command>
+tab 自动补齐command
+```
+
+
+
+使用流复制协议连接数据库
+
+https://www.postgresql.org/docs/11/protocol-replication.htm
+
+```shell
+$ psql "replication=1” -h HOST -p PORT -U USER DBNAME
+pg_basebackup	使用流协议备份
+pg_receivewal	使用流协议实时归档
+pg_recvlogical	使用流协议实时订阅
+```
+
+
+
+**SSL链路**
+
+```shell
+数据传输链路加密
+https://github.com/dioa/log/blob/maste/201305/2013052_01.md
+编译PGwith-openssl
+生成certkey对
+openssl
+postgresql.con
+Ssl=on#(change requires restart）
+SsL_ciphers='DEFAULT:ILOW:IEXP：IMDS:@STRENGTH#allowed SsLciphe
+#（changerequiresrestart）
+ssl_renegotiation_limit=512MB #amountofdata betw
+sslcert fle='servercrt#（changerequiresrestart）
+ssLkey_file='server.key
+28_hba.conf
+whostDATABASE USER ADDRESS METHOD IOPTIONSJ
+#hostssl DATABASE USER ADDRESS METHOD IOPTIONS]
+#hostnossI DATABASE USER ADDRESSMETHOD IOPTIONS
+强制使用或不使用ssl的方法
+psql "sslmc
+psql "sslmc
+```
+
+
+
+# 知识图谱
 
 ![pg知识图谱](./images/pg知识图谱.png)
 
