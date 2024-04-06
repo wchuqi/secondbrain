@@ -879,27 +879,300 @@ pg_recvlogical	使用流协议实时订阅
 
 **SSL链路**
 
+https://github.com/digoal/blog/blob/master/201305/2013052_01.md
+
 ```shell
 数据传输链路加密
-https://github.com/dioa/log/blob/maste/201305/2013052_01.md
-编译PGwith-openssl
-生成certkey对
-openssl
-postgresql.con
-Ssl=on#(change requires restart）
-SsL_ciphers='DEFAULT:ILOW:IEXP：IMDS:@STRENGTH#allowed SsLciphe
-#（changerequiresrestart）
-ssl_renegotiation_limit=512MB #amountofdata betw
-sslcert fle='servercrt#（changerequiresrestart）
-ssLkey_file='server.key
-28_hba.conf
-whostDATABASE USER ADDRESS METHOD IOPTIONSJ
-#hostssl DATABASE USER ADDRESS METHOD IOPTIONS]
-#hostnossI DATABASE USER ADDRESSMETHOD IOPTIONS
-强制使用或不使用ssl的方法
-psql "sslmc
-psql "sslmc
+https://github.com/digoal/blog/blob/master/201305/2013052_01.md
+
+编译PG  
+--with-openssl
+
+生成cert, key对
+$ openssl
+
+postgresql.conf
+ssl=on #(change requires restart）
+SsL_ciphers='DEFAULT:!LOW:!EXP:!MD5:@STRENGTH' # allowed SsL ciphers
+				#（change requires restart）
+ssl_renegotiation_limit=512MB # amount of data between renegotiations
+ssl_cert_file='server.crt #（change requires restart）
+ssL_key_file='server.key'
+
+pg_hba.conf
+#host DATABASE USER ADDRESS METHOD [OPTIONSJ
+#hostssl DATABASE USER ADDRESS METHOD [OPTIONS]
+#hostnossl DATABASE USER ADDRESS METHOD [OPTIONS
+
+client
+# 强制使用或不使用ssl的方法
+psql "sslmodel=require"
+psql "sslmodel=disable"
 ```
+
+```shell
+检验是否使用SSL连接
+postgres=# create extension sslinfo;
+CREATE EXTENSION
+digoal=# select ssl_is_used(）
+ssl_is_used
+----------
+t
+（1 row）
+digoal=# select ssl_cipher()
+ssl_cipher
+------------
+DHE-RSA-AES256-SHA
+（1 row）
+digoal=# select ssl_version()
+ssl version
+---------
+TLSv1
+（1 row）
+```
+
+
+
+## 1.4 应用开发者指南
+
+1、掌握数据库的使用，数据类型、操作符、对象类型内置函数，高级SQL用法、事务隔离级别和锁。
+2、掌握触发器，事件触发器的使用。
+3、掌握分区表的使用，异步消息的使用。
+
+
+
+**基本sql语句用法**
+
+http://www.postgresgltutorial.com/
+https://www.postgresql.org/docs/11/sql-commands.htm
+https://www.postgresql.org/docs/11/tutorial-sql.htm
+
+
+
+SQL保留|关键字(keywrods)大全
+
+https://github.com/digoal/blog/blob/master/201710/20171024_06.md
+
+
+
+**建表**
+
+xxx
+
+**select into &create table as**
+
+xxx
+
+**插入**
+
+xxxx
+
+**更新**
+
+xxx
+
+**删除**
+
+```sql
+delete update limit
+update tbl set XX=Xx where ctid = any(array(
+select ctid from tbl where xx limit xx xxor update
+));
+delete from tbl where ctid = any(array(
+select ctid from tbl where xx limit xx for update
+));
+```
+
+**查询**
+
+xxxx
+
+**批量DML**
+
+https://github.com/digoal/blog/blob/master/201704/20170424_05.md
+
+```sql
+https://github.com/digoal/blog/blob/master/201704/20170424_05.md
+
+insert into xx values (..),(..),(..),(..);
+copy XX from stdin;
+copy Xx from 'file';
+
+# 注意：update\delete 批量操做，join不是一一对应的，更新目标可能会随机匹配。
+update t set info=tl.info, crt_time=t1.crt_time from t1,t2 where(t.id=t1.id） and
+t1.id=t2.id;
+                                                                 
+update tbl_1 set.relname=tmp.rel from(values(1),(2)) tmp (rel) where
+tmp.rel=tbl_l.reltype;
+                                                                 
+delete from t using t1 where t.id=t1.id;
+delete from tbl_1 using (values (1), (2)) tmp (rel) where tmp.rel=tbl_1.reltype;
+```
+
+
+
+**DB端COPY**
+
+**客户端COPY**
+
+https://github.com/digoal/blog/blob/master/201805/20180516_03.md
+https://github.com/digoal/blog/blob/master/201805/20180510_01.md
+
+```shell
+DB端copy
+copy tbl to 'file';
+copy (SQL) to 'file';
+copy tbl from 'file';
+
+客户端copy
+copy tbl from stdin;
+copy (SQL) to stdout;
+copy tbl to stdout;
+psql (\copy to|from); -- copy协议
+```
+
+
+
+
+
+**排序**
+
+**OFFSET LIMIT**
+
+论count与offset使用不当的罪名 和 分页的优化
+
+https://github.com/digoal/blog/blob/master/201605/20160506_01.md
+
+
+
+```sql
+# 注意创建索引的时候是否指定了nulls first or nulls last
+select * from tbl_1 order by relname nulls first;
+select * from tbl_1 order by relname nulls last;
+
+select * from tbl_1 order by relname;
+select * from tbl_1 order by relname limit 10 offset 10;
+select * from tbl_1 order by relname:text collate "C”;
+```
+
+```sql
+为什么不走索引?
+1、索引顺序，ORDER BY是否匹配？
+2、where条件是否为stable，immutable表达式或常量？
+3、索引AM是否支持order by？
+4、操作符是否支持ORDER BY？
+
+select * from pg_operator where oid in (select amopopr from pg_amop where amopsortfamily <> 0);
+```
+
+pg函数有3种状态：volatile、stable、immutable
+
+```sql
+为什么offset越大越慢？
+1、OFFSET到目标行之前，处理了多少行？
+create table t (id int primary key, info text, crt_time timestamp);
+insert into t select
+generate_series(1,10000000), 'abc', clock_timestamp();
+
+select * from t where info='abc' limit 10 offset O;
+select * from t where info='abc' limit 10 offset 100000;
+
+为什么offset位移后突然变慢？
+1、扫描方法
+2、OFFSET位移到目标行前处理了多少行
+
+create table test (id int, info text, crt_time timestamp);
+insert into test select 1, 'test', clock_timestamp() from generate_series(1,100);
+insert into test select 2, 'test', clock_timestamp() from generate_series(1,10000000);
+insert into test select 1, 'test', clock_timestamp() from generate_series(1,100);
+
+select * from test where id=1 limit 100 offset 0;
+select * from test where id=1 limit 1 offset 101;
+```
+
+
+
+**聚合、解聚合**
+
+```sql
+select string_agg(relname, ',' order by XX) from tbl_1;
+select g,avg(c1) from tbl group by g;
+postgres=# select unnest(array[1,2,3]);
+unnest
+---------
+1
+2
+3
+（3 rows）
+```
+
+regex_split_to_table
+
+
+
+**DISTINCT**
+
+https://github.com/digoal/blog/blob/master/201710/20171017_02.md
+https://github.com/digoal/blog/blob/master/201903/20190317_01.md
+
+```sql
+select distinct relnamerelnamespace from pg_class;
+SELECT id COUNT_DISTINCT(val) FROM test_table GROUP BY 1;
+select count(distinct (relname, relnamespace)) from pg_class;
+select distinct on (c3) c2,c3 from tbl;
+```
+
+
+
+
+
+
+
+INNER|OUTER JOIN
+
+交并差
+
+ANY
+
+ALL
+
+UPSERT
+
+游标
+
+序列
+
+索引
+
+修改表结构
+
+DDL事务
+
+约束
+
+条件表达式
+
+类型转换
+
+行号
+
+窗口
+
+函数调用
+
+SRF
+
+数组构造
+
+ROW构造
+
+collation表达式
+
+函数成本与优化器
+
+函数三态
+
+
 
 
 
