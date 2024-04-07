@@ -1124,33 +1124,215 @@ select distinct on (c3) c2,c3 from tbl;
 
 
 
+**INNER|OUTER JOIN**
 
 
 
 
-INNER|OUTER JOIN
 
-交并差
+**交并差**
 
-ANY
+union -- 去重
+union all
+except -- 去重
+except all
+intersect -- 去重
+intersect all
 
-ALL
 
-UPSERT
 
-游标
 
-序列
 
-索引
 
-修改表结构
 
-DDL事务
+**ANY|SOME|ALL**
 
-约束
+```sql
+select from where xX = any(array(sql);
+select from where XX= any(array[val1, ...., valn]);
+select from where XX= some(array(sql));
+select from where XX = some(array[val1, ..., valn]);
+select from where Xx = all(array(sql));
+select from where xx = all(array[val1, ...., valn]);
+```
 
-条件表达式
+
+
+**UPSERT**
+
+```sql
+insert into t4 values (1, 'test', now()) on conflict(id) do update set
+info = excluded.info, crt_time = excluded.crt_time;
+insert into t4 values (1, 'test', now()) on conflict (id) do nothing;
+```
+
+
+
+**DELETE|UPDATE JOIN**
+
+```SQL
+update t set info = t1.info, crt_time = t1.crt_time from t1, t2 where
+(t.id = t1.id) and t1.id = t2.id;
+
+update tbl_1 set relname = tmp.rel from (values (1),(2)) tmp (rel) where
+tmp.rel = tbl_1.reltype;
+
+delete from t using t1 where t.id = t1.id;
+
+delete from tbl_1 using(values (1),(2)) tmp (rel) where
+tmp.rel = tbl_1.reltype;
+```
+
+
+
+**游标**
+
+```sql
+postgres=# begin
+BEGIN
+postgres=# declare cur1 cursor for select * from t4;
+DECLARE CURSOR
+postgres=# fetch 5 from cur1;
+id | info | crt_time
+-------------------------
+1  | test | 2019-02-0922:23:16.821822
+（1 row）
+postgres=# close cur1;
+CLOSE CURSOR
+
+为什么要用游标？
+翻页优化
+```
+
+
+
+
+
+**序列**
+
+```sql
+postgres=# create sequence seq1 cache 10;
+postgres=# select * from pg_sequence_parameters('seq1'::regclass);
+start_value | minimum_value | maximum_value | increment |cycle_option | cache_size | data_type
+----------------------------------
+1 | 1 | 9223372036854775807 | 1 | f | 10 | 20
+
+nextval(oid)
+setval(oid, val)
+lastval(): 最后一次nextval的返回值，每个会话一个
+alter sequence
+
+postgres=# create table tbl_321(id serial8);
+postgres=# \d+ tbl_321
+	Table	"public.tbl321"
+Column | Type | Colation | Nullable | Default | Storage | Stats target | Description
+id | bigint | not null | nextval('tbl_321_id_seq'::regclass) | plain|  |
+```
+
+
+
+**索引**
+
+```sql
+索引方法
+create index idx1 on tbl using btree (col);
+create index idx1 on tbl using gin (col);
+
+btree，gin，gist，spgist，brin，bloom，hash，rum方法
+
+表达式索引
+create index idx1 on tbl using gist(st_makepoint(x, y));
+
+条件索引
+create index idx1 on tbl(col) where XXX;
+```
+
+
+
+**修改表结构**
+
+```sql
+postgres=# alter table t4 add column c1 int8 default 10;
+ALTER TABLE
+postgres=# alter table t4 alter column c1 type text using cl::text;
+ALTER TABLE
+postgres=# alter table t4 drop column c1;
+ALTER TABLE
+```
+
+
+
+**DDL事务**
+
+```sql
+postgres=# begin；
+BEGIN
+postgres=# insert into t4 values(2);
+INSERT 0 1
+postgres=# alter table t4 rename to t5;
+ALTER TABLE
+postgres=# create table t4 (id int);
+CREATE TABLE
+postgres=# end;
+COMMIT
+```
+
+
+
+**约束**
+
+https://github.com/digoal/blog/blob/master/201712/20171223_02.md
+
+```sql
+约束种类与用法：
+- 唯一，unique
+- 非空，not null
+- check，check(exp)
+- 外键
+排他（例如，空间不相交，地图应用，范围不相交，边界限制。）
+- https://github.com/digoal/blog/blob/master/201712/20171223_02.md
+
+CREATE TABLE reservation
+(during tsrange,
+EXCLUDE USING GIST (during WITH &&)
+);
+
+CREATE EXTENSION btree_gist;
+CREATE TABLE room_reservation
+(room text,
+during tsrange,
+EXCLUDE USING GIST (room WITH =, during WITH &&)
+);
+
+排他
+postgres=# create table t_meeting (
+roomid int, --会议室ID
+who int，--谁定了这个会议室
+ts tsrange，--时间范围
+desc text，-会议内容描述
+exclude using gist (roomid with=, ts with &&) --排他约束，同一个会议室，
+不允许有时间范围交叉的记录
+);
+
+```
+
+
+
+**条件表达式**
+
+https://www.postgresql.org/docs/11/functions-conditional.html#FUNCTIONS-NULLIF
+
+```sql
+
+case when then ... else end
+
+coalesce(v1,v2....) -- return first nonnull val
+nullif(v1,v2) --V1=V2 return null else return v1
+greatest(v1,v2...) -- 返回最大的
+least(v1,v2..) -- 返回最小的
+```
+
+
 
 类型转换
 
