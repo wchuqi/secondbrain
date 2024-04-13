@@ -60,9 +60,9 @@ bbs、微信、QQ、微博、钉钉
 
 - 公益活动：pg分会、区域会议、社区培训、技术直播、在线答疑
 - 盈利模式探索
-  - 流量价值，企业长期赞助
-  - 社区淘宝店，售卖pg社区书籍、文化衫、笔记本等
-  - 盈利回馈社区，支持社区运作
+  - 流量价值,企业长期赞助
+  - 社区淘宝店,售卖pg社区书籍、文化衫、笔记本等
+  - 盈利回馈社区,支持社区运作
 
 
 
@@ -147,11 +147,11 @@ xxxx
 
 **应用场景**
 
-- 企业级核心应用，代替oracle
+- 企业级核心应用,代替oracle
 
 - IoT
 
-- GIS地理信息，时空场景
+- GIS地理信息,时空场景
 
 - 实时BI（实时任意维度数据搜索、透视、复杂分析）
 
@@ -211,7 +211,7 @@ Oracle DBA PG学习手册：
 
 https://github.com/digoal/blog/blob/master/201804/20180425_01.md
 
-如来神掌，pg大量应用场景实践：
+如来神掌,pg大量应用场景实践：
 
 https://github.com/digoal/blog/blob/master/201706/20170601_02.md
 
@@ -233,23 +233,23 @@ xxxx
 
 PG采用了开放接口的设计：
 
-- type，operator，index
-- storage，language，fdw
-- custom，scan，sample，hook等
+- type,operator,index
+- storage,language,fdw
+- custom,scan,sample,hook等
 
 基于PG开发接口扩展的产品或插件：
 
-- 基于PG的图数据库agensgraph，edgedb
+- 基于PG的图数据库agensgraph,edgedb
 - 流数据库pipelinedb
-- GIS PostGIS，pgrouting，pgpointcloud
+- GIS PostGIS,pgrouting,pgpointcloud
 - 时序数据库 timescaledb
 - 推荐数据库 recdb
 - 搜索引擎 Yahoo! Everest
-- MPP greenplum，redshift，asterdata
+- MPP greenplum,redshift,asterdata
 - 机器学习 madlib
 - 图像识别 imgsmlr
-- 分词 zhparser，pg_jieba
-- 分布式数据库 citus，pg-xI，华为Gauss，antdb
+- 分词 zhparser,pg_jieba
+- 分布式数据库 citus,pg-xI,华为Gauss,antdb
 - Oracle兼容 edb
 - 文档数据库 torodb
 
@@ -267,17 +267,17 @@ https://postgis.net/
 
 **技术趋势**
 
-1、pg是多模数据库，因为它的开放性，可以随意扩展。例如前面提到的诸多插件，使得PG是目前最强大的多模数据库。
+1、pg是多模数据库,因为它的开放性,可以随意扩展。例如前面提到的诸多插件,使得PG是目前最强大的多模数据库。
 
-2、内置并行计算（36种并行计算场景（几乎涵盖所有ap sql），平均提速20倍以上）。
+2、内置并行计算（36种并行计算场景（几乎涵盖所有ap sql）,平均提速20倍以上）。
 
-3、支持存储引擎扩展（12，zheap，zedstore）。
+3、支持存储引擎扩展（12,zheap,zedstore）。
 
-4、对芯片友好，如ARM芯片的支持。
+4、对芯片友好,如ARM芯片的支持。
 
 以上4点满足市场的既要又要还要的需求：
 
-既要SQL通用性，又要NOSQL扩展性，还要多模开发便捷性。
+既要SQL通用性,又要NOSQL扩展性,还要多模开发便捷性。
 
 既要OLTP又要OLAP。
 
@@ -315,19 +315,19 @@ fs.aio-max-nr=1048576
 fs.file-max=76724600
 
 # 可选：kernel.core_pattern=/data01/corefiles/core_%e_%u_%t_%s.%p
-# /data01/corefiles 事先建好，权限777，如果是软链接，对应的目录修改为777
+# /data01/corefiles 事先建好,权限777,如果是软链接,对应的目录修改为777
 
 kernel.sem=4096 2147483647 2147483646 512000
-# 信号量，ipcs -l或-u查看，每16个进程一组，每组信号量需要17个信号量。
+# 信号量,ipcs -l或-u查看,每16个进程一组,每组信号量需要17个信号量。
 
 kernel.shmall=107374182
-# 所有共享内存段相加大小限制（建议内存的80％），单位为页。
+# 所有共享内存段相加大小限制（建议内存的80％）,单位为页。
 
 kernel.shmmax=274877906944
-# 最大单个共享内存段大小（建议为内存一半），＞9.2的版本已大幅降低共享内存的使用，单位为字节。
+# 最大单个共享内存段大小（建议为内存一半）,＞9.2的版本已大幅降低共享内存的使用,单位为字节。
 
 kernel.shmmni=819200
-# 一共能生成多少共享内存段，每个PG数据库集群至少2个共享内存段
+# 一共能生成多少共享内存段,每个PG数据库集群至少2个共享内存段
 
 # 网络相关配置
 net.core.netdev_max_backlog=10000
@@ -349,11 +349,11 @@ net.ipv4.tcp_fin_timeout=5
 net.ipv4.tcp_synack_retries=2 
 net.ipv4.tcp_syncookies=1
 
-# 开启SYN Cookies。当出现SYN等待队列溢出时，启用cookie来处理，可防范少量的SYN攻击
+# 开启SYN Cookies。当出现SYN等待队列溢出时,启用cookie来处理,可防范少量的SYN攻击
 net.ipv4.tcp_timestamps=1
 # 减少time＿wait
 net.ipv4.tcp_tw_recycle=0
-# 如果＝1则开启TCP连接中TIME—WAIT套接字的快速回收，但是NAT环境可能导致连接失败，建议服务端关闭它
+# 如果＝1则开启TCP连接中TIME—WAIT套接字的快速回收,但是NAT环境可能导致连接失败,建议服务端关闭它
 net.ipv4.tcp_tw_reuse=1
 # 开启重用。允许将TIME—WAIT套接字重新用于新的TCP连接
 net.ipv4.tcp_max_tw_buckets=262144
@@ -364,37 +364,37 @@ net.nf_conntrack_maxy 1200000
 net.netfilter.nf_conntrack_max=1200000 
 
 vm.dirty_background_bytes=409600000
-# 系统脏页到达这个值，系统后台刷脏页调度进程pdflush（或其他）自动将（dirty＿expire＿centisecs／100）秒前的脏页刷到磁盘
-# 默认为10％，大内存机器建议调整为直接指定多少字节
+# 系统脏页到达这个值,系统后台刷脏页调度进程pdflush（或其他）自动将（dirty＿expire＿centisecs／100）秒前的脏页刷到磁盘
+# 默认为10％,大内存机器建议调整为直接指定多少字节
 
 vm.dirty_expire_centisecs=3000
-# 比这个值老的脏页，将被刷到磁盘。3000表示30秒。
+# 比这个值老的脏页,将被刷到磁盘。3000表示30秒。
 
 vm.dirty_ratio=95
-# 如果系统进程刷脏页太慢，使得系统脏页超过内存95％时，则用户进程如果有写磁盘的操作（如fsync，fdatasync等调用），则需要主动把系统脏页刷出。
-# 有效防止用户进程刷脏页，在单机多实例，并且使用CGROUP限制单实例IOPS的情况下非常有效。
+# 如果系统进程刷脏页太慢,使得系统脏页超过内存95％时,则用户进程如果有写磁盘的操作（如fsync,fdatasync等调用）,则需要主动把系统脏页刷出。
+# 有效防止用户进程刷脏页,在单机多实例,并且使用CGROUP限制单实例IOPS的情况下非常有效。
 
 vm.dirty_writeback_centisecs=100
-# pdflush（或其他）后台刷脏页进程的唤醒间隔，100表示1秒。
+# pdflush（或其他）后台刷脏页进程的唤醒间隔,100表示1秒。
 
 vm.swappiness=0
 # 不使用交换分区 
 
 vm.mmap_min_addr=65536
 vm.overcommit_memory=0
-# 在分配内存时，允许少量over malloc，如果设置为1，则认为总是有足够的内存，内存较少的测试环境可以使用1.
+# 在分配内存时,允许少量over malloc,如果设置为1,则认为总是有足够的内存,内存较少的测试环境可以使用1.
 
 vm.overcommit_ratio=90
-#当overcommit_memory=2时，用于参与计算允许指派的内存大小。
+#当overcommit_memory=2时,用于参与计算允许指派的内存大小。
 
 vm.swappiness=0
 # 关闭交换分区
 
 vm.zone_reclaim_mode=0
-# 禁用 numa， 或者在vmlinux中禁止.
+# 禁用 numa, 或者在vmlinux中禁止.
 
 net.ipv4.ip_local_port_range=40000 65535
-# 本地自动分配的TCP，UDP端口号范围
+# 本地自动分配的TCP,UDP端口号范围
 
 fs.nr_open=20480000
 # 单个进程允许打开的文件句柄上限
@@ -402,12 +402,12 @@ fs.nr_open=20480000
 # 以下参数请注意
 # wm.extra_free_kbytes=4096000
 # vm.min_free_kbytes=2097152 # vm.min_free_kbytes建议每32G内存分配1G vm.min_free_kbytes
-# 如果是小内存机器，以上两个值不建议设置
+# 如果是小内存机器,以上两个值不建议设置
 
 # vm.nr_hugepages=66536
-# 建议sharedbuffer设置超过32GB时使用大页，页大小/proc/meminfoHugepagesize
+# 建议sharedbuffer设置超过32GB时使用大页,页大小/proc/meminfoHugepagesize
 # vm.lowmem_reserve_ratio=111
-# 对于内存大于64G时，建议设置，否则建议默认值25625632
+# 对于内存大于64G时,建议设置,否则建议默认值25625632
 ```
 
 
@@ -416,7 +416,7 @@ fs.nr_open=20480000
 
 ```shell
 # 注意limits.d优先级
-# ngfile超过1048576的话，一定要先将sysctl的fs.nr_open设置为更大的值，并生效后才能继续设置nofile，
+# ngfile超过1048576的话,一定要先将sysctl的fs.nr_open设置为更大的值,并生效后才能继续设置nofile,
 
 * soft nofile 1024000
 * hard nofile 1024000
@@ -441,21 +441,21 @@ https://github.com/digoal/blog/blob/master/201601/20160111_01.md
 为什么要使用hugepage？
 
 - OOM
-- Partition table，Relcache
-- Process model，Shared buffer touch，hash table
+- Partition table,Relcache
+- Process model,Shared buffer touch,hash table
   - https://commitfest.postgresql.org/22/1695
 
 ```shell
 评估Hugepage设置多大？
 
-1、评估PG启动需要多少共享内存，先使用非大页启动
+1、评估PG启动需要多少共享内存,先使用非大页启动
 配置postgresgl.conf
 huge_pages= off
-启动数据库，从postmaster.pid中获取数据库启动需要多少内存。
+启动数据库,从postmaster.pid中获取数据库启动需要多少内存。
 获得PID
 $ Shead-1SPGDATA/postmasterpid
 4170
-计算数据库启动用了多少内存，指定进程ID
+计算数据库启动用了多少内存,指定进程ID
 $ Spmap4170 | awk '/rw-s/ && /zero/ {print $2}'
 6490428K
 
@@ -477,15 +477,15 @@ Don't forget to add this setting to /etc/sysctl.conf so that it will be reapplie
 $ vi/etc/sysctl.conf
 vm.nr_hugepages=3170
 
-4、配置postgresql.conf，让数据库使用hugepage。
+4、配置postgresql.conf,让数据库使用hugepage。
 huge_pages=on # 或者try
 shared_buffers=8GB # 使用8G内存
-5、操作系统（可选，关闭透明大页）
-配置grub.conf，加入如下，重启系统
+5、操作系统（可选,关闭透明大页）
+配置grub.conf,加入如下,重启系统
 numa=off
 transparent_hugepage=never
 或
-在/etc/rc.local中加入下面的几行，然后重启操作系统：
+在/etc/rc.local中加入下面的几行,然后重启操作系统：
 if test -f /sys/kernel/mm/transparent_hugepage/enabled;then
 	echo never > /sys/kernel/mm/transparent_hugepage/enabled
 fi
@@ -500,16 +500,16 @@ $ pg_ctl start
 $ head -l $PGDATA/postmaster.pid
 4170
 
-计算数据库启动用了多少内存，指定进程ID
+计算数据库启动用了多少内存,指定进程ID
 $ pmap 4170 | awk '/rw-s/ && /zero/ {print $2}'
-没有返回，说明使用了hugepage.
+没有返回,说明使用了hugepage.
 ```
 
 **存储卷配置**
 
 为什么要卷管理？
 
-- 大表空间（PG表空间与目录对应，目录与文件系统对应）
+- 大表空间（PG表空间与目录对应,目录与文件系统对应）
 - 单个块设备空间不够
 - 多个块设备组成一个大文件系统
 
@@ -542,10 +542,10 @@ LOCATION: mdcreate, md.c:304
 ```
 
 ```shell
-Inode，条带，mount
+Inode,条带,mount
 每8K分配一个INODE（如果文件的平均大小为8K的话）
 
-创建ext4文件系统，配置条带（PG采用8K blocksize）
+创建ext4文件系统,配置条带（PG采用8K blocksize）
 $ mkfs.ext4 /dev/mapper/vgdata01-lv01 -m 0 -O extent,uninit_bg -E
 lazy_itable_init=1,stride=2,stripe_width=32 -i 8192 4096 -T largefile -L lvO1
 $ mkfs.ext4 /dev/mapper/vgdata01-lv02 -m 0 -O extent,uninit_bg -E
@@ -684,7 +684,7 @@ $ pg_controldata
 - datafile ($PGDATA）
 
 规划表空间（可选）:
-- 数据表空间（index scan 离散IO（RW），seq scan 顺序IO）
+- 数据表空间（index scan 离散IO（RW）,seq scan 顺序IO）
 - 索引表空间（离散IO（RW））
 
 规划REDO目录（可选）
@@ -692,10 +692,10 @@ $ pg_controldata
 - pg_test_fsync
 
 规划日志目录（可选）
-- log，顺序1O
+- log,顺序1O
 
 规划临时对象表空间目录（可选）
-- 临时表、索引，排序临时文件等 -temp_tablespaces
+- 临时表、索引,排序临时文件等 -temp_tablespaces
 
 规划归档目录（可选）
 规划备份目录（可选）
@@ -706,18 +706,18 @@ initdb
 ```shell
 initdb [OPTION] ... [DATADIR]
 Options:
-[-D，--pgdata=DATADIR 	location for this database cluster
+[-D,--pgdata=DATADIR 	location for this database cluster
 -E	--encoding=ENODING 	 setdefault encoding for new databases
 --locale=LOCALE			 set default locale for new databases
---lc-collate=，--lc-ctype=，--lc-messages=LOCALE
---lc-monetary=，--lc-numeric=，--lc-time=LOCALE
+--lc-collate=,--lc-ctype=,--lc-messages=LOCALE
+--lc-monetary=,--lc-numeric=,--lc-time=LOCALE
 set default locale in the respective category for new databases(default taken for new environment）
 --no-locale equivalent --to-locale=C
--U，--username=NAME			database superuser name
+-U,--username=NAME			database superuser name
 -X,--waldir=WALDIR			location for the write-ahead log directory
---wal-segsize=SIZE			size of WAL segments，in megabytes
--k，--data-checksums		    use data page checksums
--s，--show					show internal settings
+--wal-segsize=SIZE			size of WAL segments,in megabytes
+-k,--data-checksums		    use data page checksums
+-s,--show					show internal settings
 ```
 
 ```shell
@@ -749,7 +749,7 @@ Options for Single-User Mode
 	-E
 		echo all commands to standard output before executing them
 	-j
-		Use semicolon followed by two newlines，rather than just newline，as the command entry terminator
+		Use semicolon followed by two newlines,rather than just newline,as the command entry terminator
 	-r filename
 	Send all server log output to filename. This option is only honored when supplied as a command-line option.
 ```
@@ -782,8 +782,8 @@ https://github.com/digoal/blog/blob/master/201901/20190130_03.md
 iptables（略）
 
 pg_hba.conf
-# METHOD can be trust”，”reject，“md5”,“password",“scram-sha-256",
-# “g5s"，“sspi"，“ident”, "peer”, "pam”，“ldap", "radius” or “cert".
+# METHOD can be trust”,”reject,“md5”,“password",“scram-sha-256",
+# “g5s",“sspi",“ident”, "peer”, "pam”,“ldap", "radius” or “cert".
 
 # Note that "password” sends passords in clear text；"md5” or
 # “scram-sha-256” are preferred since they send encrypted passwords。
@@ -812,15 +812,15 @@ postmaster		所有数据库进程的主进程（负责监听和fork子进程）
 startup     	主要用于数据库恢复的进程
 syslogger		记录系统口志
 pgstat			收集统计信息
-pgarch			如果开启了归档，那么postmaster会fork一个归档进程
+pgarch			如果开启了归档,那么postmaster会fork一个归档进程
 checkpointer	负责检查点的进程
 bgwriter		负责把shared bufer中的脏数据写入磁盘的进程
-autovacuumlanucher	负责回收垃圾数据的进程，如果开启了autovacuum的话，那么postmaster会fork这个进程
-autovacuumworker	负责回收垃圾数据的worker进程，是lanucher进程fork出来的
-bgworker		分为很多种worker，例如logical replication worker launcher,parallel worker, replication worker等
+autovacuumlanucher	负责回收垃圾数据的进程,如果开启了autovacuum的话,那么postmaster会fork这个进程
+autovacuumworker	负责回收垃圾数据的worker进程,是lanucher进程fork出来的
+bgworker		分为很多种worker,例如logical replication worker launcher,parallel worker, replication worker等
 wal sender		逻辑复制、流式物理复制的WAL发送进程
 wal receiver	逻辑复制、流式物理复制的WAL接收进程
-vorkprocess		工作进程，动态fork，例如并行计算的进程
+vorkprocess		工作进程,动态fork,例如并行计算的进程
 ```
 
 ![数据库进程-1](./images/数据库进程结构-1.png)
@@ -935,9 +935,9 @@ TLSv1
 
 ## 1.4 应用开发者指南
 
-1、掌握数据库的使用，数据类型、操作符、对象类型内置函数，高级SQL用法、事务隔离级别和锁。
-2、掌握触发器，事件触发器的使用。
-3、掌握分区表的使用，异步消息的使用。
+1、掌握数据库的使用,数据类型、操作符、对象类型内置函数,高级SQL用法、事务隔离级别和锁。
+2、掌握触发器,事件触发器的使用。
+3、掌握分区表的使用,异步消息的使用。
 
 
 
@@ -998,7 +998,7 @@ insert into xx values (..),(..),(..),(..);
 copy XX from stdin;
 copy Xx from 'file';
 
-# 注意：update\delete 批量操做，join不是一一对应的，更新目标可能会随机匹配。
+# 注意：update\delete 批量操做,join不是一一对应的,更新目标可能会随机匹配。
 update t set info=tl.info, crt_time=t1.crt_time from t1,t2 where(t.id=t1.id） and
 t1.id=t2.id;
                                                                  
@@ -1057,8 +1057,8 @@ select * from tbl_1 order by relname:text collate "C”;
 
 ```sql
 为什么不走索引?
-1、索引顺序，ORDER BY是否匹配？
-2、where条件是否为stable，immutable表达式或常量？
+1、索引顺序,ORDER BY是否匹配？
+2、where条件是否为stable,immutable表达式或常量？
 3、索引AM是否支持order by？
 4、操作符是否支持ORDER BY？
 
@@ -1069,7 +1069,7 @@ pg函数有3种状态：volatile、stable、immutable
 
 ```sql
 为什么offset越大越慢？
-1、OFFSET到目标行之前，处理了多少行？
+1、OFFSET到目标行之前,处理了多少行？
 create table t (id int primary key, info text, crt_time timestamp);
 insert into t select
 generate_series(1,10000000), 'abc', clock_timestamp();
@@ -1219,7 +1219,7 @@ start_value | minimum_value | maximum_value | increment |cycle_option | cache_si
 
 nextval(oid)
 setval(oid, val)
-lastval(): 最后一次nextval的返回值，每个会话一个
+lastval(): 最后一次nextval的返回值,每个会话一个
 alter sequence
 
 postgres=# create table tbl_321(id serial8);
@@ -1238,7 +1238,7 @@ id | bigint | not null | nextval('tbl_321_id_seq'::regclass) | plain|  |
 create index idx1 on tbl using btree (col);
 create index idx1 on tbl using gin (col);
 
-btree，gin，gist，spgist，brin，bloom，hash，rum方法
+btree,gin,gist,spgist,brin,bloom,hash,rum方法
 
 表达式索引
 create index idx1 on tbl using gist(st_makepoint(x, y));
@@ -1285,11 +1285,11 @@ https://github.com/digoal/blog/blob/master/201712/20171223_02.md
 
 ```sql
 约束种类与用法：
-- 唯一，unique
-- 非空，not null
-- check，check(exp)
+- 唯一,unique
+- 非空,not null
+- check,check(exp)
 - 外键
-排他（例如，空间不相交，地图应用，范围不相交，边界限制。）
+排他（例如,空间不相交,地图应用,范围不相交,边界限制。）
 - https://github.com/digoal/blog/blob/master/201712/20171223_02.md
 
 CREATE TABLE reservation
@@ -1307,10 +1307,10 @@ EXCLUDE USING GIST (room WITH =, during WITH &&)
 排他
 postgres=# create table t_meeting (
 roomid int, --会议室ID
-who int，--谁定了这个会议室
-ts tsrange，--时间范围
-desc text，-会议内容描述
-exclude using gist (roomid with=, ts with &&) --排他约束，同一个会议室，
+who int,--谁定了这个会议室
+ts tsrange,--时间范围
+desc text,-会议内容描述
+exclude using gist (roomid with=, ts with &&) --排他约束,同一个会议室,
 不允许有时间范围交叉的记录
 );
 
@@ -1334,25 +1334,252 @@ least(v1,v2..) -- 返回最小的
 
 
 
-类型转换
+**类型转换**
+
+```sql
+cast(col as newtype)
+col::newtype
+
+
+```
+
+
+
+**行号**
+
+```sql
+当前事务号
+- txid_current()
+
+当前REDO位点
+- pg_current_wal_Isn()
 
 行号
+- ctid
 
+事务中的命令号
+- cmin, cmax
+
+写入事务号（会回卷）
+- xmin
+删除事务号（会回卷）
+- xmax
+```
+
+
+
+
+
+**窗口**
+
+https://www.postgresql.org/docs/11/sql-expressions.html#SYNTAX-WINDOW-FUNCTIONS
+
+```sql
 窗口
+一个分组的所有行
+select row_number() over w1 as rn, * 
+from t1_window w1 as (partition by id), w2 as (partition by id order by info);
 
-函数调用
+select row_number() over (partition by id) as rn, * from t1;
 
-SRF
+帧
+一个分组内的数据的额外范围限定。为一个帧（滑动窗口）
+{RANGE | ROWS | GROUPS} frame_start [ frame_exclusion ]
+{RANGE | ROWS | GROUPS} BETWEEN frame_start AND frame_end [ frame_exclusion ]
+```
 
-数组构造
 
-ROW构造
 
-collation表达式
 
-函数成本与优化器
 
-函数三态
+**函数调用**
+
+从pg11开始支持存储过程,函数有返回,存储过程没有返回。
+
+```sql
+select udf(?) from tbl;
+select x from tbl where udf(x);
+select x from tbl where udf(x)=?;
+
+支持嵌套调用
+支持PL/PGSQL内调用
+```
+
+
+
+
+
+**SRF**
+
+函数的一种,可以返回多行记录
+
+SRF（returns setof ....）
+
+```sql
+postgres=# create or replace function f() returns setof int as $$
+postgres=# select * from (values(1),(2)) t(id);
+postgres=# $$ language sql strict;
+CREATE FUNCTION
+postgres=# select f();
+f
+----
+1
+2
+postgres=# select generate_series(1, 3);
+generate_series
+------
+1
+2
+3
+(3 rows)
+
+```
+
+
+
+
+
+**数组构造**
+
+```sql
+SELECT ARRAY[1,2,3+4];
+array
+------
+{1,2,7}	
+
+SELECT ARRAY[ARRAY[1,2], ARRAY[3,4];
+array
+---------
+{{1,2},{3,4}}
+             
+SELECT ARRAY[1,2,22.7]::integer[];
+array
+-------
+{1,2,23}
+
+SELECT ARRAY(SELECT ARRAY[i,i*2] from generate_series(1,5) as a(i));
+array
+-------
+{{1,2}, {2,4}, {3,6}, {4,8}, {5,10}}
+```
+
+
+
+**ROW构造**
+
+```sql
+SELECT ROW(1,2.5, 'this is a test');
+SELECT ROW(t.*, 42) FROM t;
+SELECT ROW(t.f1, t.f2, 42) FROM t;
+
+构造复合类型
+postgres=# select row(1, 'abc', now())::t;
+row
+----------
+(1,abc,"2019-04-0314:19:31.45907”)
+（1 row）
+```
+
+```sql
+构造复合类型的数组
+postgres=# select array[row(1, 'abc', now()::t, row(2, 'abc', now())::t];
+array
+----------
+{"(1,abc,\"2019-04-0314:20:03.0596151\")", "(2,abc,\"2019-04-0314:20:03.0596151\")"}
+（1 row）
+postgres=# select pg_typeof(array[row(1, 'abc', now())::t, row(2, 'abc', now())::t]);
+pg_typeof
+------
+t[]
+（1 row）
+```
+
+```sql
+构造JSON内的复合类型
+postgres=# select jsonb_build_object('a', 1, 'b', array[row(1, 'abc', now())::t, row(2, 'abc', now())::t]);
+jsonb_build_object
+---------------------------------
+{"a":1, "b":[{"id":1, "info":"abc", "crt_time":"2019-04-03T14:21:57.302418"}, {"id":2, "info":"abc", "crt_time:"2019-04-03T14:21:57.3024187"}]}
+（1 row）
+```
+
+```sql
+转换jsonb为row
+postgres=# \d t
+Table "public.t"
+
+Column | Type | Collation | Nullable | Default
+------------------------------------------------
+id | integer | info | text | crt_time | timestamp without time zone |  | |
+
+postgres=# select jsonb '{"id:1, "info":"abc", "crt_time":"2019-01-01"}';
+jsonb
+--------------
+{"id":1, "info":"abc", "crt_time":"2019-01-01"}
+（1 row）
+```
+
+```sql
+postgres=# select * from jsonb_populate_record(null::t, jsonb '{"id”:1, "info":"abc", "crt_time："2019-01-01"}');
+id linfo | crt_time
+----------
+1 | abc | 2019-01-0100:00:00
+（1 row）
+
+转换JSONB数组
+postgres=# select * from jsonb_populate_recordset(null::t, jsonb '[{"id”:1, "info":"abc", "crt_time："2019-01-01"}, {"id”:2, "info":"abc", "crt_time："2019-01-01"}]');
+id | info | crt_time
+--------
+1 | abc | 2019-01-01 00:00:00
+2 | abc | 2019-01-02 00:00:00
+（2 rows）
+```
+
+
+
+**collation表达式**
+
+https://www.postgresql.org/docs/11/sql-expressions.html#SQL-SYNTAX-COLLATE-EXPRS
+
+```sql
+expr COLLATE collation
+SELECT a, b, c FROM tbl WHERE ... ORDER BY a COLLATE "C";
+SELECT * FROM tbl WHERE (a >'foo') COLLATE "C";
+```
+
+
+
+**函数成本与优化器**
+
+https://github.com/digoal/blog/blob/master/201307/20130710_01.md
+
+```sql
+一切皆函数（操作符背后也是函数）
+函数成本 pg_proc.procost
+优先执行低成本函数
+
+digoal=# create table userinfo(id int, groupid int, username text, age int, addr text, email text, phone text);
+
+insert into userinfo values(1, 1, digoal, 1000, '杭州西湖区', 'digoal@126.com', '13999999999');
+digoal=#insert intouserinfo values(2,1,test,1000, '火星', 'digoal@126.com', '11999999999');
+digoal=# insert into userinfo values(3,1test,1000, '月球', 'digoal@126.com', '11999999999');
+digoal=#insert into userinfovalues(4,2,test,1000, '土星', 'digoal@126.com', '11999999999');
+digoal=# create view v_userinfo as select * from userinfo where groupid =2;
+```
+
+
+
+**函数三态**
+
+volatile
+每次执行，都需要评估VALUE
+stable
+事务中多次调用，参数相同是，执行一次
+可作为INDEX SCAN的条件
+immutable
+执行计划前，执行，作为常量
+绑定变量时，转换为常量
+可作为表达式索引
 
 
 
