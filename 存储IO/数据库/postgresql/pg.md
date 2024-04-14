@@ -941,7 +941,7 @@ TLSv1
 
 
 
-**基本sql语句用法**
+### 1.4.1 基本sql语句用法
 
 http://www.postgresgltutorial.com/
 https://www.postgresql.org/docs/11/sql-commands.htm
@@ -1580,6 +1580,83 @@ immutable
 执行计划前，执行，作为常量
 绑定变量时，转换为常量
 可作为表达式索引
+
+
+
+### 1.4.2 数据类型、操作符
+
+**内置类型**
+
+数值
+
+货币
+
+字符串
+
+字节流
+
+时间
+
+布尔
+
+枚举
+
+平面几何
+
+网络地址
+
+比特串
+
+全文检索
+
+UUID
+
+XML
+
+JSON
+
+数组
+
+复合类型
+
+range
+
+域
+
+大对象
+
+Itree
+
+hstore
+
+cube
+
+
+
+**扩展类型**
+
+图像
+
+geometry、 geography
+
+轨迹
+
+raster
+
+近似
+
+roaringbitmap
+
+pair
+
+支持扩展
+
+参考
+https://www.postgresql.org/docs/11/datatype.html
+https://www.postgresql.org/docs/11/functions.html
+https://www.postgresql.org/docs/11/extend.html
+
+### 1.4.3 数据库对象类型
 
 
 
