@@ -205,6 +205,8 @@ xxxx
 
 文档：
 
+https://github.com/digoal/blog/blob/master/201901/20190105_01.md
+
 https://github.com/digoal/blog/blob/master/README.md
 
 Oracle DBA PG学习手册：
@@ -1657,6 +1659,72 @@ https://www.postgresql.org/docs/11/functions.html
 https://www.postgresql.org/docs/11/extend.html
 
 ### 1.4.3 数据库对象类型
+
+https://www.postgresql.org/docs/11/sql-commands.htm
+
+```sql
+CREATE DATABASE -- create a new database
+CREATE SCHEMA -- define a new schema
+CREATE TABLESPACE -- define a new tablespace
+
+CREATE GROUP -- define a new database role
+CREATE ROLE -- define a new database role
+CREATE USER -- define a new database role
+
+CREATE TABLE -- define a new table
+CREATE TABLE AS -- define a new table from the results of a query
+CREATE MATERIALIZED VIEW -- define a new materialized view
+CREATE INDEX -- define a new index
+CREATE VIEW -- define a new view
+CREATE SEQUENCE -- define a new sequence generator
+
+CREATE LANGUAGE -- define a new procedural language
+CREATE FUNCTION -- define a new function
+CREATE PROCEDURE -- define a new procedure
+CREATE TRANSFORM -- define a new transform
+
+CREATE PUBLICATION -- define a new publication
+CREATE SUBSCRIPTION -- define a new subscriptior
+
+CREATE SERVER -- define a new foreign server
+CREATE USER MAPPING -- define a new mapping ofa user toa foreign server
+CREATE FOREIGN DATA WRAPPER -- define a new foreign-data wrapper
+CREATE FOREIGN TABLE -- define a new foreign table
+
+CREATE EXTENSION -- install an extension
+
+CREATE TEXT SEARCH CONFIGURATION -- define a new text search configuratior
+CREATE TEXT SEARCH DICTIONARY -- define a new text search dictionary
+CREATE TEXT SEARCH PARSER -- define a new text search parser
+CREATE TEXT SEARCH TEMPLATE -- define a new text search template
+
+CREATE TRIGGER -- definea new trigger
+CREATE RULE -- define a new rewrite rule
+CREATE EVENT TRIGGER -- define a new event trigger
+
+CREATE TYPE -- define a new data type
+CREATE CAST -- define a new cast
+CREATE DOMAIN -- define a new domain
+
+NOTIFY -- generate a notification
+LISTEN -- listen for a notification
+UNLISTEN -- stop listening for a notification
+
+CREATE ACCESS METHOD -- define a new access method
+CREATE AGGREGATE -- define a new aggregate function
+CREATE COLLATION -- define a new collation
+CREATE CONVERSION -- define a new encoding conversion
+CREATE OPERATOR -- define a new operator
+CREATE OPERATOR CLASS -- define a new operator class
+CREATE OPERATOR FAMILY -- define a new operator family
+
+CREATE POLICY -- define a new row level security policy for a table
+CREATE STATISTICS -- define extended statistics
+
+DECLARE -- define a cursor
+
+LOAD -- load a shared library file
+```
 
 
 
