@@ -1728,6 +1728,347 @@ LOAD -- load a shared library file
 
 
 
+### 1.4.4 内置函数
+
+pg_proc
+
+参考：
+https://www.postgresgl.org/docs/11/functions.html
+
+类型相关操作符、函数
+
+聚合函数：
+https://github.com/digoal/blog/blob/master/201503/20150302_01.md
+https://github.com/digoal/blog/blob/master/201503/20150303_03.md
+https://github.com/digoal/blog/blob/master/201504/20150407_01.md
+https://github.com/digoal/blog/blob/master/201504/20150407_02.md
+
+窗口函数
+
+SRF
+
+系统信息函数
+
+系统管理函数
+
+触发器函数
+
+事件触发器函数
+
+
+
+### 1.4.5 函数和存储过程开发
+
+sql
+
+plpgsql
+
+plperl
+
+plgo
+
+pllua
+
+pljava
+
+plpython
+
+plrust
+
+https://www.postgresql.org/docs/11/xfunc-sql.html
+
+https://www.postgresgl.org/docs/11/plpgsgl.html
+
+动态SQL
+
+format
+
+循环
+
+异常捕获
+
+嵌套事务
+
+变量（行数、..）
+
+内置绑定变量：
+
+https://github.com/digoal/blog/blob/master/201803/20180323_02.md
+
+schema less：
+
+https://github.com/digoal/blog/blob/master/201705/20170511_01.md
+
+例子：
+
+```sql
+postgres=# create or replace function biggest(variadic x int[]) returns int as $$
+declare
+res int;
+begin
+	select max(unnest) into res from unnest(x);
+	return res;
+end;
+$$ language plpgsql strict;
+
+CREATE FUNCTION
+postgres=# select biggest(1,5,100,1,2,3);
+biggest
+--------
+100
+(1 row)
+```
+
+
+
+KPI预测：
+https://github.com/digoal/blog/blob/master/201904/20190426_01.md
+
+等比数列设定KPI：
+https://github.com/digoal/blog/blob/master/201904/20190430_01.md
+
+生成随机身份证：
+https://github.com/digoal/blog/blob/master/201710/20171016_02.md
+
+KNN优化：
+https://github.com/digoal/blog/blob/master/201308/20130806_01.md
+
+相似搜索：
+https://github.com/digoal/blog/blob/master/201802/20180202_01.md
+
+图谱搜索：
+https://github.com/digoal/blog/blob/master/201801720180102_04.md
+
+
+
+调试PLPGSQL
+
+pgadmin：
+
+https://www.pgadmin.org/
+
+https://www.pgadmin.org/docs/pgadmin4/4.x/debugger.html
+
+pldebugger：
+
+https://git.postgresql.org/gitweb/?p=pldebuggergit;a=summary
+
+
+
+### 1.4.6 高级sql用法与应用场景
+
+SQL高级用法
+
+https://github.com/digoal/blog/blob/master/201802/20180226_05.md
+
+CTE（递归）
+
+https://github.com/digoal/blog/blob/master/201705/20170519_01.md
+
+https://github.com/digoal/blog/blob/master/201707/20170705_01.md
+
+https://github.com/digoal/blog/blob/master/201611/20161128_01.md
+
+LATERAL
+
+ORDINALITY (SRF）
+
+WINDOW
+
+https://github.com/digoal/blog/blob/master/201707/20170722_02.md
+
+SKIP LOCKED
+
+DISTINCT ON
+
+GROUPING SETS，CUBE，ROLLUP
+
+
+
+物化视图
+
+https://www.postgresql.org/docs/devel/static/sql-creatematerializedview.html
+
+预计算，支持索引
+
+```sql
+CREATE MATERIALIZED VIEW [ IF NOT EXISTS ] table_name
+[(column_name [,...])]
+[WITH (storage_parameter [ = value ] [...])]
+[TABLESPACE tablespace_name]
+AS query
+[WITH [NO] DATA]
+
+```
+
+
+
+刷新物化视图
+```sql
+REFRESH MATERIALIZED VIEW [CONCURRENTLY] name
+[WITH [NO] DATA]
+```
+
+实时数据清洗、转换
+
+https://github.com/digoal/blog/blob/master/201706/20170619_02.md
+
+```sql
+rule
+创建来源表结构
+postgres=# create table nt(id int，ci numeric，c2 numeric)；
+CREATE TABLE
+创建目标表结构
+postgres=# create table nt_geo(idint，geogeometry）
+CREATE TABLE
+对来源表创建规则或触发器，例如
+postgres=# create ruler1 as on insert to nt do instead insert into nt_geo values (NEW.id，
+ST_MakePoint(NEW.c1,NEW.c2));
+CREATE RULE
+使用来源数据结构，将数据插入来源数据表
+postgres=# insert into nt values(1,1,1）
+INSERT O 1
+
+rule
+源表，JSONB非结构化
+postgres=# create table tl（id int，info text,j jsonb）
+目标表，结构化
+postgres=# create table t2（id int，info text, c1 int，c2 int，c3 text）；
+在源表创建规则，自动将JSONB非结构化数据，转换为结构化数据插入
+postgres=# create rule r1 as on insert to t1 do instead insert into t2 values (NEW.ID, NEW.INFO, (NEW.J)->>'c1')::int, (NEW.J)->>'c2')::int, (NEW.J)->>'c3');
+postgres=# insert into t1 values(1, 'test', jsonb'{"c1"：1，"c2":2，"c3”.text"}'）
+postgres=# select * from tl；
+（O rows）
+postgres=# select * from t2
+id | info | c1 | c2 | c3
+l | test | 1 | 2 | text
+（1 row）
+```
+
+数据采样
+使用采样算法
+行级随机采样（BERNOULLI（百分比））
+`select * from test TABLESAMPLE bernoulli（1）`
+块级随机采样（SYSTEM（百分比））
+`select* from test TABLESAMPLE system(1）`
+
+https://github.com/digoal/blog/blob/master/201706/20170602_02.md
+
+采样应用：估值计算、统计信息、测试环境
+
+https://github.com/digoal/blog/blob/master/201709/20170911_02.md
+
+
+
+数据加密
+
+pgcrypto
+
+https://www.postgresgl.org/docs/10/static/pgcrypto.html
+
+加密后的查询加速（等值查询）
+
+加密
+
+对称、非对称、混滑（使用非对称加密需要交换的对称加密密钥，然后使用对称加密）加密
+
+https://github.com/digoal/blog/blob/master/201802/20180226_01.md
+
+
+
+字段加密
+
+```sql
+digoal=# create extension pgcrypto;
+可逆加密
+digoal=# insert into userpwd (userid, pwd） values (1，crypt('this is a pwd source', gen_salt（'bf',10）））；
+digoal=# create table userpwd (userid int8 primary key，pwd text）；
+CREATE TABLE
+
+```
+
+不可逆加密
+
+https://github.com/digoal/blog/blob/master/201607/20160727_02.md
+
+https://github.com/digoal/blog/blob/master/201711720171127_02.md
+
+
+
+数据脱敏
+
+https://github.com/digoal/blog/blob/master/201706/20170602_02.md
+
+
+
+数据去重
+
+https://github.com/digoal/blog/blob/master/201706720170602_01.md
+
+单列去重
+
+多列去重
+
+行去重
+
+多列混合去重
+
+窗口、行号、=any（array()）、数组
+
+```sql
+-- 去重最常用SQL
+delete from tbl where ctid = any(array （
+select ctid from (
+    select ctid, row_number() over (partition by c1 order by ts desc）as rn from tbl）t 
+                                                  where rn<>1
+));
+```
+
+
+
+递归查询
+
+递归查询案例  -  图式搜索
+
+
+
+私有数据保护，行级别的安全
+
+VPD (RLS）
+https://github.com/digoal/blog/blob/master/201602/20160203_03.md
+
+https://github.com/digoal/blog/blob/master/201504/20150409_01.md
+
+https://www.postgrescl.org/docs/1/sql-createpolicy.html
+
+
+
+### 1.4.7 事务隔离级别
+
+
+
+
+
+### 1.4.8 锁
+
+
+
+### 1.4.9 触发器、事件触发器、规则
+
+
+
+### 1.4.10 分区表
+
+
+
+### 1.4.11 异步消息
+
+
+
+### 1.4.12 练习
+
+
+
 
 
 # 知识图谱
