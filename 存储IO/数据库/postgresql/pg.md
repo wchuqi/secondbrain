@@ -2045,11 +2045,95 @@ https://www.postgrescl.org/docs/1/sql-createpolicy.html
 
 ### 1.4.7 事务隔离级别
 
+RC
+
+RR
+
+SS1
+
+性能对比：
+
+https://github.com/digoal/blog/blob/master/201901/20190118_02.md
+
+脏读插件：
+
+https://github.com/christophBerg/pg_dirtyread
+
+
+
 
 
 
 
 ### 1.4.8 锁
+
+
+
+锁对象
+
+锁级别
+
+AD锁
+
+锁冲突
+
+死锁
+
+死锁检测
+
+查看锁等待
+
+
+
+AD LOCK
+
+https://www.postgresql.org/docs/11/explicit-locking.html
+
+https://www.postgresgl.org/docs/11/functions-admin.html#FUNCTIONS-ADVISORY-LOCKS
+
+解决秒杀
+
+https://github.com/digoal/blog/blob/master/201801720180105_03.md
+
+https://github.com/digoal/blog/blob/master/201509/20150914_01.md
+
+解决逻辑冲突
+https://github.com/digoal/blog/blob/master/201707/20170720_01.md
+
+https://github.com/digoal/blog/blob/master/201810/20181018_04.md
+
+https://github.com/digoal/blog/blob/master/201705/20170507_02.md
+
+https://github.com/digoal/blog/blob/master/201610/20161020_02.md
+
+https://github.com/digoal/blog/blob/master/201610/20161018_01.md
+
+
+
+死锁
+互相等待
+s1
+lock t1
+Wait t2
+S2
+lock t2
+Wait t1
+
+死锁检测
+参数
+deadlock_timeout
+log_lock_waits
+
+
+
+分析锁等待
+https://github.com/digoal/blog/blob/master/201902/20190201_02.md
+
+https://github.com/digoal/blog/blob/master/201705/20170521_01.md
+
+分析整体性能瓶颈：`-perf insight`
+
+https://github.com/digoal/blog/blob/master/201901/20190125_02.md
 
 
 
